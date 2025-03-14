@@ -27,6 +27,16 @@ class Posting implements Serializable
 
 public class InvertedIndex
 {
+// 	public static class Posting implements Serializable
+// {
+// 	public String doc;
+// 	public int freq;
+// 	Posting(String doc, int freq)
+// 	{
+// 		this.doc = doc;
+// 		this.freq = freq;
+// 	}
+// }
 	private RecordManager recman;
 	private HTree hashtable;
 
@@ -55,19 +65,46 @@ public class InvertedIndex
 	{
 		// Add a "docX Y" entry for the key "word" into hashtable
 		// ADD YOUR CODES HERE
+    
+		Object value = hashtable.get(word);
+		Vector<Posting> postings;
 
+		if (value != null) {
+			postings = (Vector<Posting>) value;
+		} else {
+			postings = new Vector<Posting>();
+		}
+
+		// Create a new Posting; adjust the parameters as needed.
+		Posting newPosting = new Posting("doc" + x, y);
+		postings.add(newPosting);
+
+		// Finally, put the updated postings back into the hashtable.
+		hashtable.put(word, postings);
 	}
+
 	public void delEntry(String word) throws IOException
 	{
 		// Delete the word and its list from the hashtable
 		// ADD YOUR CODES HERE
-
+		hashtable.remove(word);
 	} 
 	public void printAll() throws IOException
 	{
 		// Print all the data in the hashtable
 		// ADD YOUR CODES HERE
-
+		FastIterator iter = hashtable.keys();
+		String key;
+		while ((key = (String) iter.next()) != null) {
+			Vector<Posting> postings = (Vector<Posting>) hashtable.get(key);
+			StringBuilder sb = new StringBuilder();
+			if (postings != null) {     
+				for (Posting p : postings) {
+					sb.append(p.doc).append(":").append(p.freq).append(" ");
+				}
+			}
+			System.out.println(key + " = " + sb.toString());
+		}
 	}	
 	
 	public static void main(String[] args)
